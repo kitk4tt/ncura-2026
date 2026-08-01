@@ -29,7 +29,7 @@ back to them. Explain the changes you made to them clearly and simply. -->
 <div class="max-w-5xl mx-auto">
 <header class="mb-10 text-center">
 <h1 class="text-4xl font-extrabold text-blue-900 mb-2">Pre-Award Checklist Generator</h1>
-<p class="text-slate-600 text-lg">Automatically extract required documents, forms, and details from NOFOs and RFAs.</p>
+<p class="text-slate-600 text-lg">Extract required documents, forms, eligibility, and deadlines from NOFO/RFA PDFs or Webpages.</p>
 </header>
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 <div class="lg:col-span-1 space-y-6">
@@ -51,7 +51,7 @@ Save Key
 <div id="keyStatus" class="text-sm mt-2 hidden text-green-600 font-medium">Key saved successfully!</div>
 </div>
 
-<!-- Input Parameters & NOFO/RFA Source Card -->
+<!-- Input Parameters & Source Card -->
 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
 <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
 <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -60,34 +60,35 @@ Save Key
 Analysis Details
 </h2>
 
-<!-- Institution Profile -->
+<!-- Institution Profile Input -->
 <div class="mb-5">
 <label class="block text-sm font-medium text-slate-700 mb-1" for="institutionInput">Your Institution Type / Name</label>
 <input type="text" id="institutionInput" placeholder="e.g., Public University (R1), Non-profit 501(c)(3), Small Business" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-<p class="text-xs text-slate-500 mt-1">Used to determine if your organization is eligible to apply.</p>
+<p class="text-xs text-slate-500 mt-1">Leave blank to list all eligible institution types, or enter yours to check direct eligibility.</p>
 </div>
 
 <hr class="my-4 border-slate-200">
 
-<!-- Input Source Selection Tabs -->
+<!-- Source Switcher Tabs -->
 <div class="mb-4">
-<label class="block text-sm font-medium text-slate-700 mb-2">Document Source</label>
+<label class="block text-sm font-medium text-slate-700 mb-2">Solicitation Source</label>
 <div class="flex border-b border-slate-200">
-<button id="tabUploadBtn" onclick="switchTab('upload')" class="py-2 px-4 text-sm font-medium border-b-2 border-blue-600 text-blue-600 focus:outline-none">File Upload</button>
-<button id="tabUrlBtn" onclick="switchTab('url')" class="py-2 px-4 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 focus:outline-none">Web URL</button>
+<button id="tabUploadBtn" onclick="switchTab('upload')" class="py-2 px-4 text-sm font-medium border-b-2 border-blue-600 text-blue-600 focus:outline-none">PDF Upload</button>
+<button id="tabUrlBtn" onclick="switchTab('url')" class="py-2 px-4 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 focus:outline-none">Solicitation Web URL</button>
 </div>
 </div>
 
-<!-- Upload Option -->
+<!-- Upload Container -->
 <div id="uploadContainer">
-<label class="block text-sm font-medium text-slate-700 mb-1" for="fileInput">Select PDF Document</label>
+<label class="block text-sm font-medium text-slate-700 mb-1" for="fileInput">Select NOFO/RFA PDF File</label>
 <input type="file" id="fileInput" accept="application/pdf" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 mb-4 cursor-pointer">
 </div>
 
-<!-- URL Option -->
+<!-- Web URL Container -->
 <div id="urlContainer" class="hidden">
-<label class="block text-sm font-medium text-slate-700 mb-1" for="urlInput">PDF Document URL</label>
-<input type="url" id="urlInput" placeholder="https://example.gov/nofo-document.pdf" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none mb-4">
+<label class="block text-sm font-medium text-slate-700 mb-1" for="urlInput">Solicitation Page Web URL</label>
+<input type="url" id="urlInput" placeholder="https://www.grants.gov/search-results-detail/351234" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none mb-2">
+<p class="text-xs text-slate-500 mb-4">Paste the link to the grant announcement webpage.</p>
 </div>
 
 <button id="generateBtn" onclick="generateChecklist()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-150 shadow-sm flex justify-center items-center">
@@ -97,15 +98,15 @@ Analysis Details
 
 </div>
 
-<!-- Result Column -->
+<!-- Result Display Box -->
 <div class="lg:col-span-2 bg-white p-8 rounded-xl shadow-sm border border-slate-200 min-h-[500px]">
 <div id="loadingState" class="hidden h-full flex-col items-center justify-center text-center mt-20">
 <svg class="animate-spin h-10 w-10 text-blue-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 </svg>
-<h3 class="text-xl font-semibold text-slate-700">Analyzing Document...</h3>
-<p class="text-slate-500 mt-2">Extracting requirements, eligibility, forms, and deadlines. This may take a minute.</p>
+<h3 class="text-xl font-semibold text-slate-700">Analyzing Solicitation...</h3>
+<p class="text-slate-500 mt-2">Extracting requirements, institution eligibility, and deadlines. This may take a minute.</p>
 </div>
 
 <div id="emptyState" class="h-full flex flex-col items-center justify-center text-center mt-20 text-slate-400">
@@ -168,7 +169,7 @@ function switchTab(tab) {
   }
 }
 
-// Convert File or Blob to Base64
+// Convert File to Base64
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -178,21 +179,29 @@ function fileToBase64(file) {
   });
 }
 
-// Fetch PDF from URL (includes proxy fallback for CORS)
-async function fetchPdfFromUrl(pdfUrl) {
-  try {
-    const res = await fetch(pdfUrl);
-    if (!res.ok) throw new Error("Direct fetch failed");
-    return await res.blob();
-  } catch (err) {
-    // Attempt fallback via CORS proxy if direct fetch fails
-    const proxyUrl = `https://api.corsproxy.io/?${encodeURIComponent(pdfUrl)}`;
-    const proxyRes = await fetch(proxyUrl);
-    if (!proxyRes.ok) {
-      throw new Error("Unable to fetch PDF from URL. The server may be blocking external requests or invalid URL.");
-    }
-    return await proxyRes.blob();
+// Fetch webpage content via CORS proxy and strip HTML tags
+async function fetchWebpageText(targetUrl) {
+  const proxyUrl = `https://api.corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+  const res = await fetch(proxyUrl);
+  if (!res.ok) {
+    throw new Error("Failed to load webpage. Please check the URL or ensure the site is publicly accessible.");
   }
+  const html = await res.text();
+
+  // Parse HTML string to extract plain readable text
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // Remove script and style elements
+  const scriptsAndStyles = doc.querySelectorAll('script, style, noscript, svg, nav, footer, header');
+  scriptsAndStyles.forEach(el => el.remove());
+
+  // Extract visible inner text
+  const cleanText = doc.body ? doc.body.innerText.replace(/\s+/g, ' ').trim() : '';
+  if (!cleanText || cleanText.length < 100) {
+    throw new Error("Could not extract readable text from the provided URL.");
+  }
+  return cleanText;
 }
 
 function setUIState(state, errorMessage = "") {
@@ -232,11 +241,42 @@ async function generateChecklist() {
     return;
   }
 
-  let base64Data = "";
-
   setUIState('loading');
 
   try {
+    let payloadContents = [];
+
+    const institutionPrompt = institution
+      ? `Our Institution Profile: "${institution}".
+Evaluate if this institution is ELIGIBLE or INELIGIBLE under Section III / Eligibility Information. Highlight specific institutional requirements (e.g., non-profit status, higher ed tier, foreign component restrictions).`
+      : `Our Institution Profile: Not specified.
+List all eligible institution categories (e.g., Non-profit, Higher Education, Small Business, Foreign Entities) specified in the solicitation.`;
+
+    const instructionsText = `
+You are an expert Research Administrator. Review the provided Notice of Funding Opportunity (NOFO), Request for Applications (RFA), or Grant Solicitation content.
+Generate a comprehensive and structured "Pre-Award Checklist" for a Principal Investigator (PI) and research administrators.
+
+Please cover the following:
+
+1. Institution Eligibility Check:
+${institutionPrompt}
+
+2. Basic Details & Deadlines:
+Agency, title, opportunity/CFDA number, and all key submission deadlines (LOI, full application, internal deadlines).
+
+3. System & Submission Requirements:
+Formatting rules (fonts, margins, page limits) and target submission portals (ASSIST, Grants.gov Workspace, Research.gov, eRA Commons).
+
+4. Required Documents Checklist:
+A tabular checklist detailing required application components:
+| Document Name | Page Limit | Specific Instructions & Nuances |
+
+5. Budgetary Guidelines:
+Cost-sharing requirements, indirect cost (F&A) limits, salary/effort caps, or unallowable costs.
+
+Format everything cleanly in Markdown with tables, headers, and bulleted lists.
+`;
+
     if (activeTab === 'upload') {
       const fileInput = document.getElementById('fileInput');
       if (!fileInput.files || fileInput.files.length === 0) {
@@ -246,73 +286,37 @@ async function generateChecklist() {
       if (file.type !== "application/pdf") {
         throw new Error("Please upload a valid PDF document.");
       }
-      base64Data = await fileToBase64(file);
+      const base64Data = await fileToBase64(file);
+
+      payloadContents = [{
+        parts: [
+          { text: instructionsText },
+          { inline_data: { mime_type: "application/pdf", data: base64Data } }
+        ]
+      }];
     } else {
       const urlInput = document.getElementById('urlInput').value.trim();
       if (!urlInput) {
-        throw new Error("Please provide a valid PDF URL.");
+        throw new Error("Please enter a web URL for the grant solicitation.");
       }
-      const blob = await fetchPdfFromUrl(urlInput);
-      base64Data = await fileToBase64(blob);
+      const extractedText = await fetchWebpageText(urlInput);
+
+      payloadContents = [{
+        parts: [
+          { text: `${instructionsText}\n\n--- SOLICITATION WEBPAGE TEXT ---:\n${extractedText}` }
+        ]
+      }];
     }
-
-    // Dynamic prompt inclusion based on whether institution profile is specified
-    const institutionSection = institution
-      ? `Institution Profile Specified: "${institution}".
-Check Section III (Eligibility Information) of the attached document and state clearly whether this institution profile is ELIGIBLE, INELIGIBLE, or REQUIRES SPECIAL CONDITIONS. Provide key supporting points directly from the opportunity text.`
-      : `Institution Profile Specified: None provided.
-Summarize all eligible institution types (e.g., Higher Education, Non-profits, For-profits, State/Local Governments, Foreign Entities) listed under Section III (Eligibility Information) of the attached document.`;
-
-    const promptText = `
-You are an expert Research Administrator. Review the attached Notice of Funding Opportunity (NOFO) / Request for Applications (RFA).
-Your task is to generate a highly detailed and structured "Pre-Award Checklist" for a Principal Investigator (PI) and the research administration team.
-
-Please organize your analysis into the following logical sections:
-
-1. Institution Eligibility Status:
-${institutionSection}
-
-2. Basic Details & Deadlines:
-Funding agency, grant title, mechanism/opportunity number, and all critical deadlines (Letter of Intent, Full Application, Internal institutional submission window).
-
-3. Formatting & Submission Requirements:
-Font size, margins, spacing, line limits, and target submission systems (e.g., ASSIST, Grants.gov Workspace, Research.gov, eRA Commons).
-
-4. Required Documents & Application Checklist:
-Provide a clear, detailed tabular checklist covering every required document (e.g., Project Summary, Research Strategy, Biosketches, Budget Justification, Facilities & Other Resources).
-- Tabular Columns: Document Name | Page Limit | Key Instructions & Nuances
-
-5. Budget & Financial Rules:
-Cost-sharing or matching rules, Indirect Cost (F&A) rate restrictions/caps, key budget limits, or salary/effort caps.
-
-Organize the output beautifully using clean Markdown headers, bullet points, and tables.
-`;
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
 
-    const payload = {
-      contents: [{
-        parts: [
-          { text: promptText },
-          {
-            inline_data: {
-              mime_type: "application/pdf",
-              data: base64Data
-            }
-          }
-        ]
-      }],
-      generationConfig: {
-        temperature: 0.1
-      }
-    };
-
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: payloadContents,
+        generationConfig: { temperature: 0.1 }
+      })
     });
 
     const data = await response.json();
